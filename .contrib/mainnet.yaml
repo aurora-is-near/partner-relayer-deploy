@@ -1,0 +1,10 @@
+---
+port: 8545
+database: postgres://aurora:aurora@database/aurora
+network: mainnet
+endpoint: http://nearcore:3030/
+engine: aurora
+signer: %%SIGNER%%
+signerKeys:
+  - config/relayer.json
+writable: false 
