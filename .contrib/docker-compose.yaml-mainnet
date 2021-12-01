@@ -1,0 +1,53 @@
+---
+version: '3.8'
+services:
+  database:
+    container_name: mainnet_database
+    image: auroraisnear/relayer-database
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:15432:5432'
+    volumes:
+      - ./database:/var/lib/postgresql/data
+  indexer:
+    container_name: mainnet_indexer
+    image: auroraisnear/relayer-endpoint
+    restart: unless-stopped
+    init: true
+    depends_on:
+      - database
+    environment:
+      - NEAR_ENV=mainnet
+      - NODE_ENV=mainnet
+    volumes:
+      - ./config:/srv/aurora/relayer/config
+    extra_hosts:
+      - host.docker.internal:host-gateway # See: https://stackoverflow.com/a/43541732
+    entrypoint: ["sh", "-c", "util/indexer/indexer | node lib/indexer_backend.js"]
+  endpoint:
+    image: auroraisnear/relayer-endpoint
+    restart: unless-stopped
+    init: true
+    depends_on:
+      - database
+      - nearcore
+    environment:
+      - NEAR_ENV=mainnet
+      - NODE_ENV=mainnet
+    expose:
+      - '8545'
+    volumes:
+      - ./config:/srv/aurora/relayer/config
+    entrypoint: ["node", "lib/index.js"]
+  nearcore:
+    image: nearaurora/nearcore:mainnet
+    restart: unless-stopped
+    depends_on:
+      - indexer
+    expose:
+      - 3030
+    volumes:
+      - ./near:/home/near
+volumes:
+  database:
+  nearcore:

@@ -2,7 +2,7 @@
 version: '3.8'
 services:
   database:
-    container_name: mainnet_database
+    container_name: testnet_database
     image: auroraisnear/relayer-database
     restart: unless-stopped
     ports:
@@ -10,15 +10,15 @@ services:
     volumes:
       - ./database:/var/lib/postgresql/data
   indexer:
-    container_name: mainnet_indexer
+    container_name: testnet_indexer
     image: auroraisnear/relayer-endpoint
     restart: unless-stopped
     init: true
     depends_on:
       - database
     environment:
-      - NEAR_ENV=mainnet
-      - NODE_ENV=mainnet
+      - NEAR_ENV=testnet
+      - NODE_ENV=testnet
     volumes:
       - ./config:/srv/aurora/relayer/config
     extra_hosts:
@@ -30,16 +30,17 @@ services:
     init: true
     depends_on:
       - database
+      - nearcore
     environment:
-      - NEAR_ENV=mainnet
-      - NODE_ENV=mainnet
+      - NEAR_ENV=testnet
+      - NODE_ENV=testnet
     expose:
       - '8545'
     volumes:
       - ./config:/srv/aurora/relayer/config
     entrypoint: ["node", "lib/index.js"]
   nearcore:
-    image: nearaurora/nearcore:mainnet
+    image: nearaurora/nearcore:testnet
     restart: unless-stopped
     depends_on:
       - indexer

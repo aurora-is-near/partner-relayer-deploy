@@ -74,4 +74,5 @@ if [ ! -f ./near/data/.version ]; then
 		fi
 	done
 fi
+cp ./contrib/docker-compose.yaml-"${network}" docker-compose.yaml
 echo Setup Complete
