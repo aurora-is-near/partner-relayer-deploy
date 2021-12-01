@@ -1,7 +1,12 @@
 #!/bin/sh
 
-network="mainnet"
+network=${1:-"mainnet"}
 namePostfix="near"
+
+if [ "${network}" == "testnet" ]; then
+	namePostfix="testnet"
+fi
+
 
 cd $(dirname $(type -p $0))
 
