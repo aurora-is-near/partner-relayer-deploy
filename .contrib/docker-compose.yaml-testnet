@@ -3,7 +3,7 @@ version: '3.8'
 services:
   database:
     container_name: testnet_database
-    image: auroraisnear/relayer-database
+    image: nearaurora/database:testnet
     restart: unless-stopped
     ports:
       - '127.0.0.1:15432:5432'
@@ -11,7 +11,7 @@ services:
       - ./database:/var/lib/postgresql/data
   indexer:
     container_name: testnet_indexer
-    image: auroraisnear/relayer-endpoint
+    image: nearaurora/endpoint:testnet
     restart: unless-stopped
     init: true
     depends_on:
@@ -25,7 +25,7 @@ services:
       - host.docker.internal:host-gateway # See: https://stackoverflow.com/a/43541732
     entrypoint: ["sh", "-c", "util/indexer/indexer | node lib/indexer_backend.js"]
   endpoint:
-    image: auroraisnear/relayer-endpoint
+    image: nearaurora/endpoint:testnet
     restart: unless-stopped
     init: true
     depends_on:
@@ -40,7 +40,7 @@ services:
       - ./config:/srv/aurora/relayer/config
     entrypoint: ["node", "lib/index.js"]
   nearcore:
-    image: nearaurora/nearcore:testnet
+    image: nearaurora/endpoint:testnet
     restart: unless-stopped
     depends_on:
       - indexer
