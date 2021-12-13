@@ -3,7 +3,7 @@ version: '3.8'
 services:
   database:
     container_name: mainnet_database
-    image: auroraisnear/relayer-database
+    image: nearaurora/database:mainnet
     restart: unless-stopped
     ports:
       - '127.0.0.1:15432:5432'
@@ -11,7 +11,7 @@ services:
       - ./database:/var/lib/postgresql/data
   indexer:
     container_name: mainnet_indexer
-    image: auroraisnear/relayer-endpoint
+    image: nearaurora/endpoint:mainnet
     restart: unless-stopped
     init: true
     depends_on:
@@ -25,7 +25,7 @@ services:
       - host.docker.internal:host-gateway # See: https://stackoverflow.com/a/43541732
     entrypoint: ["sh", "-c", "util/indexer/indexer | node lib/indexer_backend.js"]
   endpoint:
-    image: auroraisnear/relayer-endpoint
+    image: nearaurora/endpoint:mainnet
     restart: unless-stopped
     init: true
     depends_on:
