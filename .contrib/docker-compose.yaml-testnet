@@ -40,7 +40,7 @@ services:
       - ./config:/srv/aurora/relayer/config
     entrypoint: ["node", "lib/index.js"]
   nearcore:
-    image: nearaurora/endpoint:testnet
+    image: nearaurora/nearcore:testnet
     restart: unless-stopped
     depends_on:
       - indexer
