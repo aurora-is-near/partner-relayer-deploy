@@ -8,7 +8,7 @@ if [ "${network}" = "testnet" ]; then
 fi
 
 
-if [ ! -d ./contrib ]; then
+if [ ! -d ./.contrib ]; then
 	echo "Run ./setup.sh from original git repository only!"
 	exit 1
 fi
