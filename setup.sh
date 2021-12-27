@@ -3,12 +3,15 @@
 network=${1:-"mainnet"}
 namePostfix="near"
 
-if [ "${network}" == "testnet" ]; then
+if [ "${network}" = "testnet" ]; then
 	namePostfix="testnet"
 fi
 
 
-cd $(dirname $(type -p $0))
+if [ ! -d ./contrib ]; then
+	echo "Run ./setup.sh from original git repository only!"
+	exit 1
+fi
 
 mkdir near config database 2> /dev/null
 mkdir near/data 2> /dev/null
