@@ -11,3 +11,15 @@ Testnet
 =======
 
 Run `$ ./setup.sh testnet` to install a testnet instead of mainnet release.
+
+Write transactions & custom signers
+===================================
+
+The default installation does not support write transactions. Instead it disables writing and sets up a placeholder key.
+
+To enable write transactions, you need to:
+
+  - Create an account on testnet/mainnet and load some NEAR on it.
+  - Export the account's keypair and name into config/relayer.json (check the original file for format).
+  - Change the `signer` entry in the config/testnet.yaml or config/mainnet.yaml to the account's name.
+  - Restart the nearcore container.
