@@ -42,12 +42,29 @@ services:
   nearcore:
     image: nearaurora/nearcore:mainnet
     restart: unless-stopped
+    init: true
     depends_on:
       - indexer
     expose:
       - 3030
     volumes:
       - ./near:/home/near
+  resilver:
+    container_name: mainnet_resilver
+    image: nearaurora/endpoint:mainnet
+    restart: "no"
+    init: true
+    depends_on:
+      - database
+      - nearcore
+    environment:
+      - NEAR_ENV=mainnet
+      - NODE_ENV=mainnet
+    volumes:
+      - ./config:/srv/aurora/relayer/config
+    extra_hosts:
+      - host.docker.internal:host-gateway # See: https://stackoverflow.com/a/43541732
+    entrypoint: ["sh", "-c", "/srv/aurora/relayer/util/update/update.sh"]      
 volumes:
   database:
   nearcore:
