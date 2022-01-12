@@ -48,6 +48,22 @@ services:
       - 3030
     volumes:
       - ./near:/home/near
+  resilver:
+    container_name: testnet_resilver
+    image: nearaurora/endpoint:testnet
+    restart: "no"
+    init: true
+    depends_on:
+      - database
+      - nearcore
+    environment:
+      - NEAR_ENV=testnet
+      - NODE_ENV=testnet
+    volumes:
+      - ./config:/srv/aurora/relayer/config
+    extra_hosts:
+      - host.docker.internal:host-gateway # See: https://stackoverflow.com/a/43541732
+    entrypoint: ["sh", "-c", "/srv/aurora/relayer/util/update/update.sh"]        
 volumes:
   database:
   nearcore:
