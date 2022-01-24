@@ -40,9 +40,7 @@ Finding RPC endpoints
 You can list the IP addresses assigned to the docker containers by running 
 
 `
-for machine in $(docker ps --format '{{.Names}}'); do
-        echo "${machine}" $(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "${machine}" )
-done
+for machine in $(docker ps --format '{{.Names}}'); do echo "${machine}" $(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "${machine}" ) ; done
 `
 
 Please be aware that the endpoints are only listening to the assigned addresses.
