@@ -46,6 +46,10 @@ if [ ! -f ./config/relayer.json ]; then
 	sed "s/%%SIGNER%%/${relayerName}/" .contrib/"${network}".yaml > ./config/"${network}".yaml
 fi
 
+if [ ! -f ./config/blacklist.yaml ]; then
+	cp ./.contrib/blacklist.yaml ./config/blacklist.yaml
+fi
+
 if [ -f ./near/data/.version -a -f ./database/.version ]; then
 	echo Setup complete
 fi
