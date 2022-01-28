@@ -75,16 +75,16 @@ if [ ! -f ./database/.version ]; then
 	done
 fi
 
-#if [ ! -f ./near/data/.version ]; then 
-#	echo Downloading near chain snapshot 
-#	finish=0
-#	while [ ${finish} -eq 0 ]; do
-#		echo Fetching... this can take some time...
-#		curl -sSf https://snapshots.deploy.aurora.dev/158c1b69348fda67682197791/"${network}"-near-"${latest}"/data.tar?lastfile=$(tail -n1 "./near/data/.lastfile") | tar -xv -C ./near/data/ >> ./near/data/.lastfile 2> /dev/null
-#		if [ -f ./near/data/.version ]; then
-#			finish=1
-#		fi
-#	done
-#fi
+if [ ! -f ./near/data/.version ]; then 
+	echo Downloading near chain snapshot 
+	finish=0
+	while [ ${finish} -eq 0 ]; do
+		echo Fetching... this can take some time...
+		curl -sSf https://snapshots.deploy.aurora.dev/158c1b69348fda67682197791/"${network}"-near-"${latest}"/data.tar?lastfile=$(tail -n1 "./near/data/.lastfile") | tar -xv -C ./near/data/ >> ./near/data/.lastfile 2> /dev/null
+		if [ -f ./near/data/.version ]; then
+			finish=1
+		fi
+	done
+fi
 cp ./.contrib/docker-compose.yaml-"${network}" docker-compose.yaml
 echo Setup Complete
