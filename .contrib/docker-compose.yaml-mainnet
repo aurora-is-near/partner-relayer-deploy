@@ -25,6 +25,7 @@ services:
       - host.docker.internal:host-gateway # See: https://stackoverflow.com/a/43541732
     entrypoint: ["sh", "-c", "util/indexer/indexer | node lib/indexer_backend.js"]
   endpoint:
+    container_name: endpoint
     image: nearaurora/endpoint:mainnet
     restart: unless-stopped
     init: true
@@ -40,6 +41,7 @@ services:
       - ./config:/srv/aurora/relayer/config
     entrypoint: ["node", "lib/index.js"]
   nearcore:
+    container_name: mainnet_nearcore
     image: nearaurora/nearcore:mainnet
     restart: unless-stopped
     init: true
