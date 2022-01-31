@@ -34,13 +34,11 @@ using an outdated docker image. Just update the images to fix.
 
 Furthermore the database will occasionally require updates. This is done automatically by the "resilver" container that will be started automatically when the docker-compose is started. During resilvering the indexer or endpoint may throw errors. Please check the docker-compose file(s) for more information.
 
-Finding RPC endpoints
-=====================
+Finding RPC endpoint
+====================
 
-You can list the IP addresses assigned to the docker containers by running 
+The URL for the RPC endpoint is dynamic. Use below command to reveal it:
 
 `
-for machine in $(docker ps --format '{{.Names}}'); do echo "${machine}" $(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "${machine}" ) ; done
+$  docker inspect -f '{{range.NetworkSettings.Networks}}http://{{.IPAddress}}:3030{{end}} endpoint'
 `
-
-Please be aware that the endpoints are only listening to the assigned addresses.
