@@ -40,5 +40,5 @@ Finding RPC endpoint
 The URL for the RPC endpoint is dynamic. Use below command to reveal it:
 
 `
-$  docker inspect -f '{{range.NetworkSettings.Networks}}http://{{.IPAddress}}:3030{{end}}' endpoint
+$  docker inspect -f '{{range.NetworkSettings.Networks}}http://{{.IPAddress}}:8545{{end}}' endpoint
 `
