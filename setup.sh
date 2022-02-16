@@ -50,42 +50,41 @@ if [ ! -f ./config/blacklist.yaml ]; then
 	cp ./.contrib/blacklist.yaml ./config/blacklist.yaml
 fi
 
-if [ -f ./near/data/.version -a -f ./database/.version ]; then
-	echo Setup complete
+if [ -f ./near/data/CURRENT -a -f ./database/.version ]; then
+        echo Setup complete
 fi
 
 
 latest=""
 if [ ! -f .latest ]; then
-	echo Initial
-	latest=$(curl -sSf  https://snapshots.deploy.aurora.dev/snapshots/"${network}"-latest)
-	echo "${latest}" > ".latest"
+        echo Initial
+        latest=$(curl -sSf  https://snapshots.deploy.aurora.dev/snapshots/"${network}"-latest)
+        echo "${latest}" > ".latest"
 fi
 latest=$(cat ".latest")
 
 if [ ! -f ./database/.version ]; then 
-	echo Downloading database snapshot ${latest} 
-	finish=0
-	while [ ${finish} -eq 0 ]; do
-		echo Fetching... this can take some time...
-		curl -sSf https://snapshots.deploy.aurora.dev/158c1b69348fda67682197791/"${network}"-db-"${latest}"/data.tar?lastfile=$(tail -n1 "./database/.lastfile") | tar -xv -C ./database/ >> ./database/.lastfile 2> /dev/null
-		if [ -f ./database/.version ]; then
-			finish=1
-		fi
-	done
+        echo Downloading database snapshot ${latest} 
+        finish=0
+        while [ ${finish} -eq 0 ]; do
+                echo Fetching... this can take some time...
+                curl -sSf https://snapshots.deploy.aurora.dev/158c1b69348fda67682197791/"${network}"-db-"${latest}"/data.tar?lastfile=$(tail -n1 "./database/.lastfile") | tar -xv -C ./database/ >> ./database/.lastfile 2> /dev/null
+                if [ -f ./database/.version ]; then
+                        finish=1
+                fi
+        done
 fi
 
 if [ ! -f ./near/data/CURRENT ]; then 
-	echo Downloading near chain snapshot 
-	finish=0
-	while [ ${finish} -eq 0 ]; do
-		echo Fetching... this can take some time...
-		curl -sSf https://near-protocol-public.s3-accelerate.amazonaws.com/backups/"${network}"/rpc/data.tar | tar -xv -C ./near/data/ 2> /dev/null
- 		#curl -sSf https://snapshots.deploy.aurora.dev/158c1b69348fda67682197791/"${network}"-near-"${latest}"/data.tar?lastfile=$(tail -n1 "./near/data/.lastfile") | tar -xv -C ./near/data/ >> ./near/data/.lastfile 2> /dev/null
-		if [ -f ./near/data/CURRENT ]; then
-			finish=1
-		fi
-	done
+        echo Downloading near chain snapshot 
+        finish=0
+        while [ ${finish} -eq 0 ]; do
+                echo Fetching... this can take some time...
+                docker run --init --rm --name snapshot_downloader -v `pwd`/near/data/:/home/near:rw --entrypoint /usr/local/bin/download_snapshot.sh -ti nearaurora/nearcore:"${network}"
+                if [ -f ./near/data/CURRENT ]; then
+                        finish=1
+                fi
+        done
 fi
 cp ./.contrib/docker-compose.yaml-"${network}" docker-compose.yaml
 echo Setup Complete
