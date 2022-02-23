@@ -80,7 +80,7 @@ if [ ! -f ./near/data/CURRENT ]; then
         finish=0
         while [ ${finish} -eq 0 ]; do
                 echo Fetching... this can take some time...
-                docker run --init --rm --name snapshot_downloader -v `pwd`/near/:/home/near:rw --entrypoint /usr/local/bin/download_snapshot.sh -ti nearaurora/nearcore:"${network}"
+                docker run --init --rm --name snapshot_downloader -v `pwd`/near/:/home/near:rw --entrypoint /usr/local/bin/download_snapshot.sh nearaurora/nearcore:"${network}"
                 if [ -f ./near/data/CURRENT ]; then
                         finish=1
                 fi
