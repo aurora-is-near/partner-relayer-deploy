@@ -40,6 +40,11 @@ services:
     volumes:
       - ./config:/srv/aurora/relayer/config
     entrypoint: ["node", "lib/index.js"]
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: "10m"
   nearcore:
     container_name: mainnet_nearcore
     image: nearaurora/nearcore:mainnet
