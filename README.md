@@ -51,3 +51,13 @@ Good to know
   - You can change the setup of the nginx reverse proxy by editing the contrib/nginx/<network>/endpoint.conf files. Restart the node afterwards.
   - You can prevent listening on the public IP by modifying the docker-compose.yaml file. See embedded comments.
 
+
+Changes
+=======
+
+v2.0
+
+  - Change naming scheme for docker images to make reuse easier.
+  - Add scaling of endpoints for better performance.
+  - Add reverse proxy for easier deployment and more stable operations.
+  - Add automatic update functionality.
