@@ -1,0 +1,110 @@
+---
+version: '3.8'
+services:
+  database:
+    container_name: testnet_database
+    image: nearaurora/database-testnet:latest
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:15432:5432'
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    networks:
+      static-network:
+        ipv4_address: 10.123.46.253
+  indexer:
+    container_name: testnet_indexer
+    image: nearaurora/endpoint-testnet:latest
+    restart: unless-stopped
+    init: true
+    depends_on:
+      - database
+    environment:
+      - NEAR_ENV=testnet
+      - NODE_ENV=testnet
+    volumes:
+      - ./config:/srv/aurora/relayer/config
+    extra_hosts:
+      - host.docker.internal:host-gateway # See: https://stackoverflow.com/a/43541732
+    entrypoint: ["sh", "-c", "util/indexer/indexer | node lib/indexer_backend.js"]
+    networks:
+      static-network:
+        ipv4_address: 10.123.46.252
+  nearcore:
+    container_name: testnet_nearcore
+    image: nearaurora/nearcore-testnet:latest
+    restart: unless-stopped
+    init: true
+    depends_on:
+      - indexer
+    expose:
+      - 3030
+    volumes:
+      - ./near:/home/near
+    networks:
+      static-network:
+        ipv4_address: 10.123.46.251
+  resilver:
+    container_name: testnet_resilver
+    image: nearaurora/endpoint-testnet:latest
+    restart: "no"
+    init: true
+    depends_on:
+      - database
+      - nearcore
+    environment:
+      - NEAR_ENV=testnet
+      - NODE_ENV=testnet
+    volumes:
+      - ./config:/srv/aurora/relayer/config
+    extra_hosts:
+      - host.docker.internal:host-gateway # See: https://stackoverflow.com/a/43541732
+    entrypoint: ["sh", "-c", "/srv/aurora/relayer/util/update/update.sh"]      
+    networks:
+      static-network:
+        ipv4_address: 10.123.46.250
+  reverseproxy:
+    container_name: reverseproxy
+    image: nearaurora/reverseproxy:latest
+    restart: unless-stopped
+    init: true
+    expose:
+      - '80'
+    ports:
+      - '10080:80'  # Remove this line to prevent listening on public IP address.
+      #- '127.0.0.1:10080:80' # Remove the hashtag in the beginning of this line to enable listening on 127.0.0.1.
+    volumes:
+      - ./contrib/nginx/testnet:/config
+    networks:
+      static-network:
+        ipv4_address: 10.123.46.249
+  endpoint:
+    image: nearaurora/endpoint-testnet:latest
+    restart: unless-stopped
+    init: true
+    depends_on:
+      - database
+      - nearcore
+    environment:
+      - NEAR_ENV=testnet
+      - NODE_ENV=testnet
+    expose:
+      - '8545'
+    volumes:
+      - ./config:/srv/aurora/relayer/config
+    entrypoint: ["node", "lib/index.js"]
+    networks:
+      static-network:
+  watchtower:
+    container_name: watchtower
+    restart: unless-stopped
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json
+    command: --interval 30
+networks:
+  static-network:
+    ipam:
+      config:
+         - subnet: 10.123.46.0/24

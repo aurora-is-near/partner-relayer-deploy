@@ -4,13 +4,19 @@ Aurora Relayer & Near Core on mainnet
 Requirements: docker, docker-compose, curl. x64-64 architecture.
 
   1. Run `$ ./setup.sh`. Wait until it finishes with "Setup Complete". This can take hours due to the volume of data to download.
-  2. Run `$ docker-compose up`
-  3. Enjoy
+  2. Enjoy
  
 Testnet
 =======
 
 Run `$ ./setup.sh testnet` to install a testnet instead of mainnet release.
+
+Starting & Stopping
+===================
+
+When running `./setup.sh` you should end up with a running node that is catching up with the network.
+You can always stop and start the node by executing the `./stop.sh` or `./start.sh` command.
+
 
 Write transactions & custom signers
 ===================================
@@ -28,17 +34,20 @@ To enable write transactions, you need to:
 Updates
 =======
 
-Due to fast changing development on both NEAR and Aurora-Relayer, it is paramount to keep on track with changes.
-Data releases and docker image releases are tightly synchronized. If you encounter any problems, it is likely by
-using an outdated docker image. Just update the images to fix.
+The software in this installation is updated automatically. Whenever Aurora releases a new image, it will be
+downloaded, and the component restarted.
 
-Furthermore the database will occasionally require updates. This is done automatically by the "resilver" container that will be started automatically when the docker-compose is started. During resilvering the indexer or endpoint may throw errors. Please check the docker-compose file(s) for more information.
+This is however not true for the included database and chain files. These are only downloaded initially when
+running `./setup.sh`. Keep your node running to prevent going out of sync.
 
 Finding RPC endpoint
 ====================
 
-The URL for the RPC endpoint is dynamic. Use below command to reveal it:
+The RPC endpoint is at http://127.0.0.1:10080/ as well as on the public IPs of your computer.
 
-`
-$  docker inspect -f '{{range.NetworkSettings.Networks}}http://{{.IPAddress}}:8545{{end}}' endpoint
-`
+Good to know
+============
+
+  - You can change the setup of the nginx reverse proxy by editing the contrib/nginx/<network>/endpoint.conf files. Restart the node afterwards.
+  - You can prevent listening on the public IP by modifying the docker-compose.yaml file. See embedded comments.
+

@@ -1,8 +1,8 @@
 ---
 port: 8545
-database: postgres://aurora:aurora@database/aurora
+database: postgres://aurora:aurora@10.123.45.253/aurora
 network: mainnet
-endpoint: http://nearcore:3030/
+endpoint: http://10.123.45.251:3030/
 engine: aurora
 signer: %%SIGNER%%
 signerKeys:
