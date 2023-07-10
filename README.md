@@ -1,3 +1,5 @@
+> **⚠ WARNING: This repository is deprecated. Please visit [Standalone RPC](https://github.com/aurora-is-near/standalone-rpc).
+
 Aurora Relayer & Near Core on mainnet
 =====================================
 
